@@ -1,0 +1,112 @@
+/*
+ * FH Gym Assistant — design tokens
+ * Base: the Champions4good style reference, adapted from a marketing poster to an app.
+ *
+ * Three deliberate departures from the reference, all documented in PLAN.md §9:
+ *   1. Druk Condensed and Neue Montreal are commercial -> Bebas Neue and Inter.
+ *   2. Every display size is a clamp(). A fixed 317px headline is a desktop poster,
+ *      not a phone screen. The poster energy survives; the layout stops breaking at 390px.
+ *   3. Lavender is the primary action on DARK surfaces only. On light surfaces the primary
+ *      button is a plum fill. The reference contradicts itself here; this resolution
+ *      satisfies both readings and is the only one that passes contrast.
+ */
+
+@import 'tailwindcss';
+
+/* Explicit direction variants so rtl:/ltr: are guaranteed regardless of Tailwind defaults. */
+@custom-variant rtl ([dir='rtl'] &);
+@custom-variant ltr ([dir='ltr'] &);
+
+@theme {
+  /* ---------------------------------------------------------------- colors */
+
+  /* Brand palette — straight from the reference. */
+  --color-plum: #23002b;
+  --color-lavender: #e894ff;
+  --color-espresso: #291900;
+  --color-ink: #002629;
+  --color-slate: #333333;
+  --color-charcoal: #121212;
+  --color-paper: #ffffff;
+  --color-mint: #93ffe4;
+  --color-amber: #ffac47;
+
+  /* Extensions the reference does not cover but an app needs. */
+  --color-danger: #ff4d5e; /* revoke access, delete program — distinct from lavender */
+  --color-plum-raised: #2e0438; /* hover/selected state on plum, one step lighter */
+
+  /* Semantic aliases. Prefer these in components; the brand names above are the source. */
+  --color-surface: var(--color-plum);
+  --color-surface-raised: var(--color-plum-raised);
+  --color-surface-card: var(--color-espresso);
+  --color-surface-card-deep: var(--color-ink);
+  --color-surface-light: var(--color-paper);
+
+  --color-accent: var(--color-lavender);
+  --color-status-done: var(--color-mint);
+  --color-status-due: var(--color-amber);
+
+  /* Named so the generated utilities read well: text-on-dark, border-line-light, … */
+  --color-on-dark: var(--color-paper);
+  --color-on-light: var(--color-slate);
+  --color-heading-light: var(--color-charcoal);
+  --color-muted-dark: rgb(255 255 255 / 0.62);
+  --color-muted-light: #6b6b6b;
+
+  --color-line-dark: rgb(255 255 255 / 0.14);
+  --color-line-light: #e5e5e5;
+
+  /* ------------------------------------------------------------- typography */
+
+  /*
+   * Indirection is intentional. --app-font-* is reassigned per language in global.css,
+   * so `font-display` renders Bebas Neue under lang=en and Morabba under lang=fa
+   * without any component knowing which language is active.
+   */
+  --font-display: var(--app-font-display);
+  --font-ui: var(--app-font-ui);
+
+  /* Fluid scale. Min values are the phone reading; max values are the reference's. */
+  --text-display-xl: clamp(4.5rem, 20vw, 19.8125rem); /* 72 -> 317 */
+  --text-display-xl--line-height: 0.78;
+  --text-display-xl--letter-spacing: 0.005em;
+
+  --text-display: clamp(3.5rem, 13vw, 11.6875rem); /* 56 -> 187 */
+  --text-display--line-height: 0.85;
+  --text-display--letter-spacing: 0.005em;
+
+  --text-heading: clamp(2rem, 6vw, 3.625rem); /* 32 -> 58 */
+  --text-heading--line-height: 1.1;
+  --text-heading--letter-spacing: -0.022em;
+
+  --text-heading-sm: clamp(1.5rem, 4vw, 2rem); /* 24 -> 32 */
+  --text-heading-sm--line-height: 0.85;
+  --text-heading-sm--letter-spacing: 0.005em;
+
+  --text-subheading: 1.5rem; /* 24 */
+  --text-subheading--line-height: 1;
+  --text-subheading--letter-spacing: 0.005em;
+
+  --text-body: 1rem; /* 16 */
+  --text-body--line-height: var(--app-leading-body);
+  --text-body--letter-spacing: var(--app-tracking-ui);
+
+  --text-body-sm: 0.875rem; /* 14 */
+  --text-body-sm--line-height: var(--app-leading-body);
+  --text-body-sm--letter-spacing: var(--app-tracking-ui);
+
+  --text-caption: 0.75rem; /* 12 */
+  --text-caption--line-height: var(--app-leading-body);
+  --text-caption--letter-spacing: var(--app-tracking-ui);
+
+  /* ---------------------------------------------------------------- shape */
+  --radius-tag: 6px;
+  --radius-card: 14px;
+  --radius-special: 24px;
+  --radius-pill: 9999px;
+
+  /* --------------------------------------------------------------- layout */
+  --spacing-page: 1200px;
+  --spacing-section: 64px;
+  --spacing-card: 20px;
+}

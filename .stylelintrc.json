@@ -1,0 +1,56 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "property-disallowed-list": [
+      [
+        "margin-left",
+        "margin-right",
+        "padding-left",
+        "padding-right",
+        "border-left",
+        "border-right",
+        "border-left-width",
+        "border-right-width",
+        "border-left-color",
+        "border-right-color",
+        "border-top-left-radius",
+        "border-top-right-radius",
+        "border-bottom-left-radius",
+        "border-bottom-right-radius",
+        "left",
+        "right",
+        "float",
+        "clear"
+      ],
+      {
+        "message": "Physical property — this app is bilingual RTL/LTR. Use the logical equivalent (margin-inline-start, inset-inline-end, border-start-start-radius, …).",
+        "severity": "error"
+      }
+    ],
+    "declaration-property-value-disallowed-list": [
+      {
+        "text-align": ["left", "right"]
+      },
+      {
+        "message": "Use text-align: start / end so Persian and English both read correctly."
+      }
+    ],
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["theme", "custom-variant", "apply", "layer", "variant", "utility", "source", "plugin", "config", "reference"]
+      }
+    ],
+    "import-notation": null,
+    "custom-property-pattern": null,
+    "selector-class-pattern": null,
+
+    "custom-property-empty-line-before": null,
+    "color-hex-length": null,
+    "alpha-value-notation": null,
+    "font-family-name-quotes": null,
+    "value-keyword-case": null,
+    "property-no-vendor-prefix": null
+  },
+  "ignoreFiles": ["dist/**/*"]
+}

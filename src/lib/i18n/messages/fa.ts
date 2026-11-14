@@ -1,0 +1,185 @@
+import type { Messages } from '../types'
+
+/*
+ * Typed as Messages, so adding a key to en.ts without adding it here fails the build.
+ * That is the whole point — a Persian-default app cannot ship with English leaking through.
+ */
+export const fa: Messages = {
+  // --- brand / chrome
+  'app.name': 'دستیار باشگاه FH',
+  'app.tagline': 'برنامه‌ای که واقعاً اجرا می‌شود.',
+
+  // --- landing
+  'landing.hero.line1': 'تیمت',
+  'landing.hero.line2': 'رو',
+  'landing.hero.line3': 'بساز',
+  'landing.door.coach.title': 'مربی هستم',
+  'landing.door.coach.body': 'با گوگل وارد شو، نام باشگاهت را بنویس و برنامه بساز.',
+  'landing.door.coach.cta': 'ورود',
+  'landing.door.trainee.title': 'کد دارم',
+  'landing.door.trainee.body': 'کد QR مربی‌ات را اسکن کن. بدون حساب، بدون رمز.',
+  'landing.door.trainee.cta': 'اسکن کد',
+
+  // --- common actions
+  'action.save': 'ذخیره',
+  'action.cancel': 'انصراف',
+  'action.delete': 'حذف',
+  'action.edit': 'ویرایش',
+  'action.add': 'افزودن',
+  'action.back': 'بازگشت',
+  'action.next': 'بعدی',
+  'action.done': 'تمام',
+  'action.retry': 'تلاش دوباره',
+
+  // --- navigation
+  'nav.dashboard': 'داشبورد',
+  'nav.trainees': 'شاگردان',
+  'nav.programs': 'برنامه‌ها',
+  'nav.exercises': 'حرکات',
+  'nav.settings': 'تنظیمات',
+  'nav.today': 'امروز',
+  'nav.week': 'هفته',
+  'nav.history': 'تاریخچه',
+
+  // --- language
+  'lang.switch': 'زبان',
+  'lang.en': 'English',
+  'lang.fa': 'فارسی',
+
+  // --- states
+  'state.loading': 'در حال بارگذاری…',
+  'state.empty.trainees.title': 'هنوز شاگردی نداری',
+  'state.empty.trainees.body': 'اولین شاگردت را اضافه کن و کد QR را تحویلش بده.',
+  'error.generic.title': 'یک چیزی خراب شد',
+  'error.generic.body': 'انجام نشد. دوباره تلاش کن و اگر تکرار شد به ما بگو.',
+  'error.notfound.title': 'اینجا چیزی نیست',
+  'error.notfound.body': 'این صفحه وجود ندارد.',
+  'error.unconfigured.title': 'هنوز وصل نیست',
+  'error.unconfigured.body':
+    'پروژهٔ Supabase تنظیم نشده است. فایل .env.example را به .env.local کپی کن و مقدارهای VITE_SUPABASE_URL و VITE_SUPABASE_ANON_KEY را پر کن.',
+
+  // --- auth
+  'auth.signingIn': 'در حال انتقال به گوگل…',
+  'auth.callback.working': 'در حال ورود…',
+  'auth.callback.failed.title': 'ورود کامل نشد',
+  'auth.callback.failed.body': 'گوگل بدون نشست برگرداندت. دوباره وارد شو.',
+  'auth.signOut': 'خروج',
+
+  // --- onboarding
+  'onboarding.title': 'نام باشگاهت را بنویس',
+  'onboarding.subtitle': 'همین نام روی کارت شاگردانت دیده می‌شود. بعداً هم می‌توانی عوضش کنی.',
+  'onboarding.gymName.label': 'نام باشگاه',
+  'onboarding.gymName.placeholder': 'باشگاه آهن',
+  'onboarding.gymName.tooShort': 'حداقل ۲ حرف بنویس.',
+  'onboarding.gymName.tooLong': 'کمتر از ۸۰ حرف باشد.',
+  'onboarding.timezone.label': 'منطقهٔ زمانی',
+  'onboarding.timezone.hint': 'تعیین می‌کند «امروز» برای شاگردانت کی است.',
+  'onboarding.submit': 'ساختن باشگاه',
+  'onboarding.failed': 'ساخت باشگاه انجام نشد. دوباره تلاش کن.',
+
+  // --- coach
+  'coach.dashboard.title': 'داشبورد',
+  'coach.greeting': 'خوش آمدی، {name}',
+  'coach.gymLabel': 'باشگاه',
+  'coach.catalogHint': '۱۵۰۰ حرکت با تصویر متحرک، با فیلتر عضله و وسیله.',
+  'coach.browseCatalog': 'دیدن حرکات',
+
+  // --- exercise catalog
+  'exercises.searchPlaceholder': 'جست‌وجوی حرکت…',
+  'exercises.clearFilters': 'پاک کردن فیلترها',
+  'exercises.noResults': 'چیزی با این فیلترها پیدا نشد.',
+  'exercises.loadMore': 'بیشتر',
+  'exercises.count': '{count} حرکت',
+
+  // --- trainees
+  'trainees.add.title': 'افزودن شاگرد',
+  'trainees.add.submit': 'ساختن و نمایش QR',
+  'trainees.field.name': 'نام',
+  'trainees.field.namePlaceholder': 'رضا احمدی',
+  'trainees.field.phone': 'تلفن (اختیاری)',
+  'trainees.status.active': 'فعال',
+  'trainees.status.revoked': 'لغو شده',
+  'trainees.action.program': 'برنامه',
+  'trainees.action.newQr': 'QR جدید',
+  'trainees.action.revoke': 'لغو دسترسی',
+  'trainees.action.revokeConfirm':
+    'دسترسی این شاگرد لغو شود؟ همهٔ دستگاه‌هایش بلافاصله خارج می‌شوند.',
+  'trainees.action.reactivate': 'بازگرداندن دسترسی',
+  'trainees.qr.title': 'برای ورود اسکن کن',
+  'trainees.qr.copyLink': 'کپی لینک',
+  'trainees.qr.oneTimeWarning':
+    'این کد فقط یک بار نمایش داده می‌شود. با بستن این پنجره از بین می‌رود — می‌توانی کد تازه بسازی، ولی کد قبلی دیگر کار نمی‌کند.',
+
+  // --- trainee side
+  'claim.failed.title': 'این کد کار نکرد',
+  'claim.failed.body': 'شاید لغو یا تعویض شده باشد. از مربی‌ات کد تازه بگیر.',
+  'trainee.hello': 'سلام {name}',
+  'trainee.noProgram': 'مربی‌ات هنوز برنامه‌ای برایت ثبت نکرده.',
+  'trainee.restDay': 'روز استراحت',
+  'trainee.restDayBody': 'امروز تمرینی نداری. خوب بخور، خوب بخواب.',
+  'trainee.markDone': 'انجام شد',
+  'trainee.undo': 'برگرداندن',
+  'trainee.doneCount': '{done} از {total} انجام شد',
+  'trainee.lastTime': 'دفعهٔ قبل ({date}): {done} حرکت انجام شد',
+
+  // --- programs
+  'program.status.draft': 'پیش‌نویس',
+  'program.status.active': 'فعال',
+  'program.status.completed': 'تمام‌شده',
+  'program.status.archived': 'بایگانی',
+  'program.template': 'الگو',
+  'programs.new.title': 'برنامهٔ جدید',
+  'programs.new.name': 'نام برنامه',
+  'programs.new.namePlaceholder': 'دورهٔ حجم',
+  'programs.new.templatePlaceholder': 'پوش / پول / پا',
+  'programs.new.daysPerWeek': 'روز در هفته',
+  'programs.new.create': 'ساختن',
+  'programs.newTemplate': 'الگوی جدید',
+  'programs.fromTemplate': 'یا از یک الگو شروع کن',
+  'programs.dayWeek': 'روز در هفته',
+  'programs.none': 'هنوز برنامه‌ای نیست.',
+  'programs.noTemplates': 'هنوز الگویی نداری. یک برنامه بساز و به عنوان الگو ذخیره کن.',
+  'programs.templatesHint':
+    'یک بار برنامه را بنویس و برای همهٔ شاگردان استفاده کن. کپی کردن الگو همهٔ روزها و حرکات را می‌آورد.',
+  'programs.deleteConfirm': 'این برنامه حذف شود؟ قابل بازگشت نیست.',
+
+  // --- builder
+  'builder.programTitle': 'نام برنامه',
+  'builder.day': 'روز',
+  'builder.dayTitle': 'نام روز',
+  'builder.dayTitlePlaceholder': 'سینه و پشت بازو',
+  'builder.restDay': 'استراحت',
+  'builder.addExercises': 'افزودن حرکت',
+  'builder.emptyDay': 'هنوز حرکتی برای این روز ثبت نشده.',
+  'builder.activate': 'اختصاص به شاگرد',
+  'builder.duplicate': 'کپی',
+  'builder.saveAsTemplate': 'ذخیره به عنوان الگو',
+  'builder.sets': 'ست',
+  'builder.repsMin': 'تکرار',
+  'builder.repsMax': 'تا',
+  'builder.weight': 'وزنه',
+  'builder.rest': 'استراحت (ث)',
+  'builder.supersetGroup': 'سوپرست',
+  'builder.superset': 'سوپرست',
+  'builder.note': 'یادداشت',
+  'builder.moveUp': 'بالا',
+  'builder.moveDown': 'پایین',
+  'builder.picker.title': 'افزودن حرکت',
+  'builder.picker.bookmarks': 'ذخیره‌شده',
+  'builder.picker.all': 'همه',
+  'builder.picker.add': 'افزودن {count}',
+  'exercises.bookmark': 'ذخیره',
+  'exercises.bookmarked': 'ذخیره شد',
+  'exercises.custom.new': 'حرکت جدید',
+  'exercises.custom.title': 'حرکت اختصاصی خودت',
+  'exercises.custom.hint':
+    'برای دستگاهی که باشگاهت دارد ولی در فهرست نیست، یا حرکتی که با نام خودت می‌نویسی. فقط باشگاه خودت آن را می‌بیند.',
+  'exercises.custom.name': 'نام',
+  'exercises.custom.nameFa': 'نام فارسی (اختیاری)',
+  'exercises.custom.categories': 'گروه عضلانی',
+  'exercises.custom.equipment': 'وسیله (اختیاری)',
+  'exercises.custom.media': 'لینک تصویر یا GIF (اختیاری)',
+  'exercises.custom.mediaHint': 'لینک یک تصویر متحرک یا عکس را بگذار.',
+  'exercises.custom.instructions': 'توضیح اجرا (اختیاری)',
+  'exercises.custom.instructionsHint': 'هر مرحله در یک خط.',
+}
