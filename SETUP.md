@@ -28,7 +28,7 @@ Applied to project `pfbhkscauoxesvkcpzzw` via the Management API and verified:
 2. **Netlify → Environment variables:** the two variables below. The per-gym manifest
    edge function (`netlify/edge-functions/gym-manifest.ts`) reads the same two at runtime,
    so set their scope to include **Functions** as well as Builds.
-3. **Domain:** wherever this document says `fhgym.netlify.app`, use the real site name —
+3. **Domain:** the production site is `fhgymassistant.netlify.app`; if it is ever renamed, update it
    in Supabase's Site URL / Redirect URLs and in Google's Authorised JavaScript origins.
    PWA install only works over https, so test installs on the deployed site, not on a LAN IP.
 
@@ -45,14 +45,14 @@ Budget about 15 minutes. Once these are done, sign-in works end to end.
 |---|---|
 | Supabase project ref | `pfbhkscauoxesvkcpzzw` |
 | Supabase URL | `https://pfbhkscauoxesvkcpzzw.supabase.co` |
-| Production domain | `https://fhgym.netlify.app` |
+| Production domain | `https://fhgymassistant.netlify.app` |
 | Local dev | `http://localhost:5173` |
 
 ### Google OAuth — copy these exactly
 
 **Authorised JavaScript origins** (2 entries — your app's own origins):
 ```
-https://fhgym.netlify.app
+https://fhgymassistant.netlify.app
 http://localhost:5173
 ```
 
@@ -63,7 +63,7 @@ https://pfbhkscauoxesvkcpzzw.supabase.co/auth/v1/callback
 
 Only one redirect URI. Google hands the code to Supabase, Supabase creates the session and
 then bounces the browser to your app — so your own `/auth/callback` path never appears here.
-Putting `https://fhgym.netlify.app/auth/callback` in this box is the usual mistake and
+Putting `https://fhgymassistant.netlify.app/auth/callback` in this box is the usual mistake and
 produces `redirect_uri_mismatch`.
 
 ### Which credential goes where
@@ -103,17 +103,17 @@ them up.
 
 **Site URL:**
 ```
-https://fhgym.netlify.app
+https://fhgymassistant.netlify.app
 ```
 
 **Redirect URLs** (3 entries):
 ```
-https://fhgym.netlify.app/auth/callback
+https://fhgymassistant.netlify.app/auth/callback
 http://localhost:5173/auth/callback
-https://*--fhgym.netlify.app/auth/callback
+https://*--fhgymassistant.netlify.app/auth/callback
 ```
 
-The third is the wildcard for Netlify deploy previews (`deploy-preview-7--fhgym.netlify.app`).
+The third is the wildcard for Netlify deploy previews (`deploy-preview-7--fhgymassistant.netlify.app`).
 Without it, sign-in works on production and on localhost but fails on every PR preview.
 
 ---

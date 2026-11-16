@@ -1,7 +1,10 @@
 /*
  * Per-gym web app manifest and fallback icon.
  *
- *   GET /manifest/<gymId>.webmanifest  — the gym's own "app": its name, its logo as the icon
+ *   GET /manifest/<gymId>.webmanifest?k=<token>
+ *                                      — the gym's own "app": its name, its logo as the icon,
+ *                                        starting at /me?k=<token> so the installed app can
+ *                                        sign the trainee back in (iOS isolates its storage)
  *   GET /gym-icon/<gymId>.svg          — monogram icon for gyms that have not uploaded a logo
  *
  * When a trainee adds the workout page to their Android home screen, Chrome reads this
@@ -13,6 +16,7 @@
 
 declare const Netlify: { env: { get(name: string): string | undefined } }
 
+const TOKEN = /^[0-9a-f]{32,128}$/i
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const CREAM = '#f1e8d7'
 const PINE = '#2f655c'
@@ -84,11 +88,14 @@ export default async (request: Request): Promise<Response> => {
       ]
     : [{ src: `/gym-icon/${gymId}.svg`, sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }]
 
+  const token = url.searchParams.get('k') ?? ''
+  const startUrl = TOKEN.test(token) ? `/me?k=${token}` : '/me'
+
   const manifest = {
     id: '/me',
     name: brand.gym_name,
     short_name: brand.gym_name.length > 12 ? brand.gym_name.slice(0, 12).trim() : brand.gym_name,
-    start_url: '/me',
+    start_url: startUrl,
     scope: '/',
     display: 'standalone',
     orientation: 'portrait',
@@ -100,8 +107,9 @@ export default async (request: Request): Promise<Response> => {
   return new Response(JSON.stringify(manifest), {
     headers: {
       'content-type': 'application/manifest+json',
-      // Short: a coach who changes their logo should see it on the next install.
-      'cache-control': 'public, max-age=300',
+      // Short and private: it is per-trainee once ?k= is present, and a coach who changes
+      // their logo should see it on the next install.
+      'cache-control': 'private, max-age=300',
     },
   })
 }

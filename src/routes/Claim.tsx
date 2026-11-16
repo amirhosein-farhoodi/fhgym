@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui'
 import { FullScreenMessage, FullScreenSpinner } from '@/components/Feedback'
-import { claimTrainee, rememberTrainee } from '@/features/trainees/claim'
+import { claimAndRemember, traineeHomePath } from '@/features/trainees/claim'
 import { useT } from '@/lib/i18n'
 
 /**
@@ -22,10 +22,10 @@ export function Claim() {
     if (!token || started.current) return
     started.current = true
 
-    claimTrainee(token)
-      .then((result) => {
-        rememberTrainee(result)
-        void navigate('/me', { replace: true })
+    claimAndRemember(token)
+      .then(() => {
+        // Token in the URL so "Add to Home Screen" from here installs a self-signing-in app.
+        void navigate(traineeHomePath(token), { replace: true })
       })
       .catch(() => setFailed(true))
   }, [token, navigate])

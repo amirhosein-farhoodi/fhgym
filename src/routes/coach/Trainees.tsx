@@ -1,6 +1,18 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { Ban, CircleCheck, ClipboardList, Phone, QrCode, UserCheck, UserPlus, Users, UserX } from 'lucide-react'
+import {
+  Ban,
+  CircleCheck,
+  ClipboardList,
+  Phone,
+  QrCode,
+  Search,
+  SearchX,
+  UserCheck,
+  UserPlus,
+  Users,
+  UserX,
+} from 'lucide-react'
 import { Badge, Button, Card, EmptyState, Field, Input, PageHeader } from '@/components/ui'
 import { CoachLayout } from '@/components/CoachLayout'
 import { InlineSpinner } from '@/components/Feedback'
@@ -22,6 +34,25 @@ function initials(name: string): string {
   return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase()
 }
 
+/**
+ * Folds the ways the same name or number gets typed on Iranian keyboards into one form:
+ * Arabic ي/ك vs Persian ی/ک, Persian and Arabic digits vs Latin, the zero-width
+ * non-joiner, case and extra spaces. "رضا احمدي" finds "رضا احمدی"; "۰۹۱۲" finds "0912".
+ */
+function normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[يى]/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x06f0))
+    .replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x0660))
+    .replace(/\u200c/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+const digitsOnly = (text: string) => normalize(text).replace(/\D/g, '')
+
 interface QrTarget {
   name: string
   token: string
@@ -40,6 +71,21 @@ export function Trainees() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [qr, setQr] = useState<QrTarget | null>(null)
+  const [query, setQuery] = useState('')
+
+  // Client-side: a coach has tens of trainees, at most a few hundred, all already loaded.
+  const visible = useMemo(() => {
+    const list = trainees.data ?? []
+    const q = normalize(query)
+    if (!q) return list
+    const words = q.split(' ')
+    const qDigits = digitsOnly(query)
+    return list.filter((trainee) => {
+      const name = normalize(trainee.full_name)
+      if (words.every((word) => name.includes(word))) return true
+      return qDigits.length >= 3 && digitsOnly(trainee.phone ?? '').includes(qDigits)
+    })
+  }, [trainees.data, query])
 
   const trimmed = name.trim()
   const canSubmit = trimmed.length >= 2 && !createTrainee.isPending
@@ -113,6 +159,42 @@ export function Trainees() {
         <div>
           {trainees.isPending && <InlineSpinner />}
 
+          {trainees.isSuccess && trainees.data.length > 0 && (
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <div className="relative min-w-0 flex-1 sm:max-w-sm">
+                <Search
+                  aria-hidden
+                  className="pointer-events-none absolute start-3.5 top-1/2 size-[18px] -translate-y-1/2 text-fg-subtle"
+                />
+                <Input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t('trainees.search.placeholder')}
+                  aria-label={t('trainees.search.placeholder')}
+                  className="ps-10"
+                />
+              </div>
+              <p className="text-caption text-fg-muted tabular-nums" aria-live="polite">
+                {query ?
+                  t('trainees.search.count', { shown: visible.length, total: trainees.data.length })
+                : t('trainees.search.total', { total: trainees.data.length })}
+              </p>
+            </div>
+          )}
+
+          {trainees.isSuccess && trainees.data.length > 0 && visible.length === 0 && (
+            <EmptyState
+              icon={SearchX}
+              title={t('trainees.search.noResults')}
+              action={
+                <Button size="sm" variant="secondary" onClick={() => setQuery('')}>
+                  {t('exercises.clearFilters')}
+                </Button>
+              }
+            />
+          )}
+
           {trainees.isSuccess && trainees.data.length === 0 && (
             <EmptyState
               icon={Users}
@@ -122,7 +204,7 @@ export function Trainees() {
           )}
 
           <ul className="grid gap-4 xl:grid-cols-2">
-            {trainees.data?.map((trainee) => {
+            {visible.map((trainee) => {
               const revoked = trainee.revoked_at !== null
               return (
                 <li key={trainee.id}>

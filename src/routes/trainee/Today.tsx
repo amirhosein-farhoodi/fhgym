@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   CalendarClock,
   Check,
@@ -21,7 +22,12 @@ import { InstallHint } from '@/components/InstallHint'
 import { useTraineeBrand } from '@/features/branding/brand'
 import { CoachAvatar, GymAvatar } from '@/features/branding/GymAvatar'
 import { useInstallBranding } from '@/features/branding/useInstallBranding'
-import { recallTrainee } from '@/features/trainees/claim'
+import {
+  claimAndRemember,
+  recallTrainee,
+  traineeHomePath,
+  type StoredTrainee,
+} from '@/features/trainees/claim'
 import { exerciseImageUrl, mediaCrossOrigin } from '@/features/exercises/useExercises'
 import { exerciseName } from '@/features/exercises/name'
 import {
@@ -40,19 +46,67 @@ import type { ProgramDayWithExercises } from '@/lib/db.types'
 /** Animations already requested this page-load, so switching days does not refetch them. */
 const prefetched = new Set<string>()
 
+/**
+ * Gets a trainee before showing the workout:
+ *   1. remembered on this device — the normal case;
+ *   2. otherwise, the access token in the URL (?k=) — an app installed to an iPhone home
+ *      screen starts with storage separate from Safari, so it signs itself in from this;
+ *   3. otherwise, ask them to scan their QR code again. Never the coach landing page.
+ */
+export function TraineeToday() {
+  const t = useT()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [params] = useSearchParams()
+  const urlToken = params.get('k') ?? undefined
+
+  const [trainee, setTrainee] = useState<StoredTrainee | null>(recallTrainee)
+  const [failed, setFailed] = useState(false)
+  const started = useRef(false)
+
+  // A token we have not claimed with on this device (fresh install, or another trainee's link).
+  const needsClaim = Boolean(urlToken) && trainee?.token !== urlToken
+
+  useEffect(() => {
+    if (!needsClaim || !urlToken || started.current) return
+    started.current = true
+    claimAndRemember(urlToken)
+      .then((next) => {
+        // Drop anything cached for a previous trainee on this device.
+        queryClient.removeQueries({ queryKey: ['trainee'] })
+        setTrainee(next)
+      })
+      .catch(() => setFailed(true))
+  }, [needsClaim, urlToken, queryClient])
+
+  // Keep the token in the address bar, so "Add to Home Screen" always captures it.
+  useEffect(() => {
+    if (trainee?.token && !urlToken) void navigate(traineeHomePath(trainee.token), { replace: true })
+  }, [trainee?.token, urlToken, navigate])
+
+  if (failed) {
+    return navigator.onLine ?
+        <FullScreenMessage title={t('claim.failed.title')} body={t('claim.failed.body')} />
+      : <FullScreenMessage title={t('trainee.offline.title')} body={t('trainee.offline.firstLoad')} />
+  }
+  if (needsClaim) return <FullScreenSpinner branded={false} />
+  if (!trainee) return <FullScreenMessage title={t('trainee.rescan.title')} body={t('trainee.rescan.body')} />
+
+  return <TraineeWorkout trainee={trainee} />
+}
+
 /*
  * The trainee's whole app.
  *
  * Read-only by design (PLAN.md §3.4): they never edit a prescription and never type a number.
  * The only things they change are which exercise is current and which ones are done.
  */
-export function TraineeToday() {
+function TraineeWorkout({ trainee }: { trainee: StoredTrainee }) {
   const t = useT()
   const { locale } = useI18n()
-  const trainee = recallTrainee()
   // The gym's screen, not ours: logo, name and coach come from the gym.
   const brand = useTraineeBrand()
-  useInstallBranding(brand.data)
+  useInstallBranding(brand.data, trainee.token)
 
   const program = useActiveProgram()
   const history = useSessionHistory()
@@ -61,10 +115,10 @@ export function TraineeToday() {
   const days = program.data?.program_days ?? []
   const day: ProgramDayWithExercises | undefined = days[dayIndex]
 
-  const session = useDaySession(day?.id, trainee?.trainee_id)
-  const ensureSession = useEnsureSession(day?.id ?? '', trainee?.trainee_id ?? '')
+  const session = useDaySession(day?.id, trainee.trainee_id)
+  const ensureSession = useEnsureSession(day?.id ?? '', trainee.trainee_id ?? '')
   const setCurrent = useSetCurrentExercise(day?.id ?? '')
-  const { online, pending, sync } = useTickSync(trainee?.trainee_id)
+  const { online, pending, sync } = useTickSync(trainee.trainee_id)
   // Tapping "current" works offline too; the server copy catches up when it can.
   const [currentOverride, setCurrentOverride] = useState<string | null>(null)
 
@@ -111,7 +165,6 @@ export function TraineeToday() {
     }
   }, [history.data, day])
 
-  if (!trainee) return <Navigate to="/" replace />
   if (program.isPending) {
     // Never opened online on this phone, and offline now: nothing to show yet.
     if (!online) {

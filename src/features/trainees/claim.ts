@@ -38,20 +38,42 @@ export async function claimTrainee(token: string): Promise<ClaimResult> {
 
 const STORAGE_KEY = 'fh.trainee'
 
+/** What we keep on the device. The token lets an installed app re-claim on its own. */
+export interface StoredTrainee extends ClaimResult {
+  token?: string
+}
+
 /** Remembered so a returning trainee lands straight on their workout without rescanning. */
-export function rememberTrainee(result: ClaimResult): void {
+export function rememberTrainee(result: ClaimResult, token?: string): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(result))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...result, token }))
   } catch {
     /* private mode — the Supabase session still persists, this is only a nicety */
   }
 }
 
-export function recallTrainee(): ClaimResult | null {
+export function recallTrainee(): StoredTrainee | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as ClaimResult) : null
+    return raw ? (JSON.parse(raw) as StoredTrainee) : null
   } catch {
     return null
   }
+}
+
+/** Claim and remember in one step — used by the QR route and by an installed app's first launch. */
+export async function claimAndRemember(token: string): Promise<StoredTrainee> {
+  const result = await claimTrainee(token)
+  rememberTrainee(result, token)
+  return { ...result, token }
+}
+
+/**
+ * The trainee's home URL. It carries the access token on purpose: on iOS a home-screen app
+ * gets storage separate from Safari, so the installed app starts with no session and no
+ * remembered trainee. With the token in its start URL it can sign itself back in. The token
+ * is the same secret already printed in the QR code.
+ */
+export function traineeHomePath(token: string | undefined): string {
+  return token ? `/me?k=${encodeURIComponent(token)}` : '/me'
 }
