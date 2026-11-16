@@ -23,11 +23,11 @@ export function Field({ label, hint, error, children }: FieldProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-body-sm font-medium text-on-dark">
+      <label htmlFor={id} className="text-body-sm font-semibold text-fg">
         {label}
       </label>
       {hint && (
-        <p id={hintId} className="text-caption text-muted-dark">
+        <p id={hintId} className="text-caption text-fg-muted">
           {hint}
         </p>
       )}
@@ -50,10 +50,10 @@ export function Input({ invalid = false, className, ...props }: InputProps) {
     <input
       aria-invalid={invalid || undefined}
       className={cn(
-        'w-full rounded-special bg-white/6 px-4 py-3 text-body text-on-dark',
-        'border transition-colors placeholder:text-muted-dark',
-        invalid ? 'border-danger' : 'border-line-dark focus:border-accent',
-        'focus:outline-none focus-visible:outline-2 focus-visible:outline-accent',
+        'h-11 w-full rounded-[12px] bg-surface-raised px-4 text-body text-fg',
+        'border shadow-[inset_0_1px_2px_rgb(43_47_51/0.06)] transition-[border-color,box-shadow] placeholder:text-fg-subtle',
+        invalid ? 'border-danger' : 'border-line-strong hover:border-steel/30 focus:border-accent',
+        'focus:outline-none focus:ring-4 focus:ring-pine/15',
         className,
       )}
       {...props}

@@ -35,7 +35,10 @@ export function Toggle<T extends string>({
     <div
       role="radiogroup"
       aria-label={label}
-      className={cn('inline-flex items-center gap-1 rounded-pill bg-white/8 p-1', className)}
+      className={cn(
+        'inline-flex items-center gap-0.5 rounded-pill border border-line bg-surface-sunken/70 p-0.5',
+        className,
+      )}
     >
       {options.map((option) => {
         const selected = option.value === value
@@ -48,10 +51,8 @@ export function Toggle<T extends string>({
             aria-label={option.ariaLabel}
             onClick={() => onChange(option.value)}
             className={cn(
-              'rounded-pill px-4 py-2 text-body-sm font-medium transition-colors',
-              selected
-                ? 'bg-accent text-plum'
-                : 'text-on-dark/70 hover:text-on-dark hover:bg-white/8',
+              'rounded-pill px-3.5 py-1.5 text-caption font-semibold transition-colors',
+              selected ? 'bg-steel text-cream shadow-sm' : 'text-fg-muted hover:text-fg',
             )}
           >
             {option.label}

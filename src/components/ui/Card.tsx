@@ -3,39 +3,29 @@ import { cn } from '@/lib/cn'
 import type { Surface } from './Button'
 
 /*
- * No shadows anywhere. The reference builds depth from flat colour layering, not elevation —
- * adding a box-shadow here is the fastest way to make the whole app look like a different product.
+ * Plaster on plaster: a lighter card on the cream page, a hairline edge and a low warm
+ * shadow. `surface="dark"` is the steel variant for the occasional emphasis block.
  */
-export type CardTone = 'warm' | 'cool'
-
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   surface?: Surface
-  /** Dark cards only: espresso (warm) or ink teal (cool). Ignored on light. */
-  tone?: CardTone
   interactive?: boolean
   children: ReactNode
 }
 
-export function Card({
-  surface = 'dark',
-  tone = 'warm',
-  interactive = false,
-  className,
-  ...props
-}: CardProps) {
+export function Card({ surface = 'light', interactive = false, className, ...props }: CardProps) {
   return (
     <div
       className={cn(
         'rounded-card p-card',
-        surface === 'dark'
+        surface === 'light'
           ? [
-              tone === 'warm' ? 'bg-surface-card' : 'bg-surface-card-deep',
-              'text-on-dark',
-              interactive && 'transition-colors hover:bg-surface-raised',
+              'border border-line/70 bg-surface-card text-fg shadow-card',
+              interactive &&
+                'transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-raised',
             ]
           : [
-              'bg-surface-light text-on-light border border-line-light',
-              interactive && 'transition-colors hover:bg-black/[0.03]',
+              'bg-surface-inverse text-on-inverse',
+              interactive && 'transition-colors hover:bg-steel-soft',
             ],
         className,
       )}

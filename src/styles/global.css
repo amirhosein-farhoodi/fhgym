@@ -15,7 +15,7 @@
 
 :root,
 [lang='en'] {
-  --app-font-display: 'Bebas Neue', 'Oswald', 'Impact', sans-serif;
+  --app-font-display: 'Barlow Condensed', 'Oswald', 'Arial Narrow', sans-serif;
   --app-font-ui: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --app-leading-body: 1.43;
   --app-tracking-ui: -0.022em;
@@ -32,8 +32,8 @@
   --app-tracking-ui: 0;
 
   /* Persian display type sets wider, so the clamps cap lower to keep headlines on screen. */
-  --text-display-xl: clamp(3rem, 13vw, 11rem);
-  --text-display: clamp(2.5rem, 9vw, 7rem);
+  --text-display-xl: clamp(2.5rem, 8vw, 5.5rem);
+  --text-display: clamp(2.25rem, 6vw, 4rem);
   --text-display-xl--line-height: 1;
   --text-display--line-height: 1.05;
   --text-heading-sm--line-height: 1.2;
@@ -62,7 +62,7 @@
   body {
     margin: 0;
     background-color: var(--color-surface);
-    color: var(--color-on-dark);
+    color: var(--color-fg);
     font-family: var(--font-ui);
     font-size: var(--text-body);
     line-height: var(--app-leading-body);
@@ -75,8 +75,17 @@
    * Display type is uppercase in Latin only. Persian has no case, and `text-transform`
    * on Persian is a no-op that still costs a repaint — so it is scoped.
    */
+  .font-display {
+    font-weight: 700;
+  }
+
   [lang='en'] .font-display {
     text-transform: uppercase;
+  }
+
+  ::selection {
+    background-color: var(--color-sage);
+    color: var(--color-steel);
   }
 
   /* Numerals stay Latin in UI chrome: `3 x 12` scans better than Persian digits in a
@@ -90,7 +99,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-steel);
     outline-offset: 2px;
   }
 

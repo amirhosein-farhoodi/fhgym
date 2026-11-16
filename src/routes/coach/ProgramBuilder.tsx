@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Badge, Button, Card, Display, Input } from '@/components/ui'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ChevronLeft, CircleCheck, Copy, Layers, Moon, Play, Plus, Sparkles } from 'lucide-react'
+import { Badge, Button, Card, Display, EmptyState, Input } from '@/components/ui'
 import { CoachLayout } from '@/components/CoachLayout'
 import { FullScreenMessage, FullScreenSpinner } from '@/components/Feedback'
 import { ExercisePicker } from '@/features/programs/ExercisePicker'
@@ -49,16 +50,29 @@ export function ProgramBuilder() {
 
   return (
     <CoachLayout>
+      <Link
+        to={data.is_template || !data.trainee_id ? '/coach/programs' : `/coach/trainees/${data.trainee_id}/program`}
+        className="mb-4 inline-flex items-center gap-1.5 text-caption font-semibold text-fg-muted hover:text-fg"
+      >
+        <ChevronLeft aria-hidden className="icon-directional size-4" />
+        {t('nav.programs')}
+      </Link>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <Display size="sm" as="h1" className="text-accent">
+          <Display size="md" as="h1" className="text-fg">
             {data.title}
           </Display>
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-3 flex items-center gap-2">
             <Badge tone={data.status === 'active' ? 'done' : 'neutral'}>
+              {data.status === 'active' && <CircleCheck aria-hidden />}
               {t(`program.status.${data.status}` as 'program.status.draft')}
             </Badge>
-            {data.is_template && <Badge tone="accent">{t('program.template')}</Badge>}
+            {data.is_template && (
+              <Badge tone="accent">
+                <Layers aria-hidden />
+                {t('program.template')}
+              </Badge>
+            )}
           </div>
         </div>
 
@@ -68,6 +82,7 @@ export function ProgramBuilder() {
               onClick={() => activate.mutate(data.id, { onSuccess: () => void program.refetch() })}
               disabled={activate.isPending}
             >
+              <Play aria-hidden />
               {t('builder.activate')}
             </Button>
           )}
@@ -81,6 +96,7 @@ export function ProgramBuilder() {
               )
             }
           >
+            <Layers aria-hidden />
             {t('builder.saveAsTemplate')}
           </Button>
           <Button
@@ -93,6 +109,7 @@ export function ProgramBuilder() {
               )
             }
           >
+            <Copy aria-hidden />
             {t('builder.duplicate')}
           </Button>
         </div>
@@ -100,7 +117,7 @@ export function ProgramBuilder() {
 
       <Card className="mt-6">
         <label className="flex flex-col gap-2">
-          <span className="text-caption text-muted-dark">{t('builder.programTitle')}</span>
+          <span className="text-body-sm font-semibold">{t('builder.programTitle')}</span>
           <Input
             defaultValue={data.title}
             onBlur={(event) => {
@@ -113,29 +130,46 @@ export function ProgramBuilder() {
       </Card>
 
       {/* ------------------------------------------------------------ days */}
-      <div className="mt-8 flex flex-wrap gap-2">
-        {days.map((d, index) => (
-          <button
-            key={d.id}
-            type="button"
-            onClick={() => setActiveDay(index)}
-            aria-pressed={index === activeDay}
-            className={cn(
-              'rounded-pill px-4 py-2 text-body-sm transition-colors',
-              index === activeDay ? 'bg-accent text-plum' : 'bg-white/8 text-on-dark/75',
-            )}
-          >
-            {d.title || `${t('builder.day')} ${d.day_index}`}
-            {d.is_rest_day && ' · ' + t('builder.restDay')}
-          </button>
-        ))}
+      <div className="-mx-4 mt-8 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <div className="flex gap-2 pb-1">
+          {days.map((d, index) => {
+            const selected = index === activeDay
+            return (
+              <button
+                key={d.id}
+                type="button"
+                onClick={() => setActiveDay(index)}
+                aria-pressed={selected}
+                className={cn(
+                  'flex shrink-0 items-center gap-2.5 rounded-[14px] border px-3 py-2 text-start transition-colors',
+                  selected
+                    ? 'border-steel bg-steel text-cream shadow-card'
+                    : 'border-line bg-surface-card text-fg-muted hover:border-line-strong hover:text-fg',
+                )}
+              >
+                <span
+                  className={cn(
+                    'flex size-7 items-center justify-center rounded-[8px] font-display text-body',
+                    selected ? 'bg-pine text-cream' : 'bg-surface-sunken text-fg',
+                  )}
+                  dir="ltr"
+                >
+                  {d.is_rest_day ? <Moon aria-hidden className="size-3.5" /> : d.day_index}
+                </span>
+                <span className="text-body-sm font-semibold capitalize">
+                  {d.title || `${t('builder.day')} ${d.day_index}`}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {day && (
         <Card className="mt-4">
           <div className="flex flex-wrap items-end gap-4">
             <label className="flex flex-col gap-1">
-              <span className="text-caption text-muted-dark">{t('builder.dayTitle')}</span>
+              <span className="text-body-sm font-semibold">{t('builder.dayTitle')}</span>
               <Input
                 defaultValue={day.title ?? ''}
                 key={day.id}
@@ -147,21 +181,23 @@ export function ProgramBuilder() {
               />
             </label>
 
-            <label className="flex items-center gap-2 text-body-sm">
+            <label className="flex h-11 cursor-pointer items-center gap-2.5 rounded-pill border border-line-strong bg-surface-raised px-4 text-body-sm font-semibold">
+              <Moon aria-hidden className="size-4 text-fg-muted" />
               <input
                 type="checkbox"
                 checked={day.is_rest_day}
                 onChange={(event) =>
                   updateDay.mutate({ dayId: day.id, patch: { is_rest_day: event.target.checked } })
                 }
-                className="size-4 accent-[var(--color-accent)]"
+                className="order-last size-4 accent-[var(--color-pine-deep)]"
               />
               {t('builder.restDay')}
             </label>
           </div>
 
           {/* Preset focus buttons fill the day title and focus tags in one tap. */}
-          <div className="mt-4 flex flex-wrap gap-1.5">
+          <div className="mt-5 flex flex-wrap items-center gap-1.5">
+            <Sparkles aria-hidden className="me-1 size-4 text-copper" />
             {Object.entries(DAY_PRESETS).map(([preset, focus]) => (
               <button
                 key={preset}
@@ -172,7 +208,7 @@ export function ProgramBuilder() {
                     patch: { focus, title: day.title || preset.replace('-', ' ') },
                   })
                 }
-                className="rounded-pill bg-white/8 px-3 py-1 text-caption capitalize text-on-dark/75 hover:text-on-dark"
+                className="h-8 rounded-pill border border-dashed border-line-strong px-3 text-caption font-semibold capitalize text-fg-muted transition-colors hover:border-pine hover:bg-pine-soft hover:text-pine-deep"
               >
                 {preset.replace('-', ' ')}
               </button>
@@ -206,11 +242,14 @@ export function ProgramBuilder() {
               </ul>
 
               {day.program_exercises.length === 0 && (
-                <p className="mt-6 text-body-sm text-muted-dark">{t('builder.emptyDay')}</p>
+                <EmptyState icon={Plus} title={t('builder.emptyDay')} className="mt-6 py-8" />
               )}
 
               <div className="mt-6">
-                <Button onClick={() => setPicking(true)}>{t('builder.addExercises')}</Button>
+                <Button onClick={() => setPicking(true)}>
+                  <Plus aria-hidden />
+                  {t('builder.addExercises')}
+                </Button>
               </div>
             </>
           )}

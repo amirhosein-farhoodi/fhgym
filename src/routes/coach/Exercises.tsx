@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Display, Input } from '@/components/ui'
+import { Dumbbell, FilterX, Plus, Search, SearchX, Shapes, Wrench } from 'lucide-react'
+import { Button, Chip, EmptyState, Input, PageHeader } from '@/components/ui'
+import { InlineSpinner } from '@/components/Feedback'
 import { CoachLayout } from '@/components/CoachLayout'
 import { ExerciseCard } from '@/features/exercises/ExerciseCard'
 import { useExercises } from '@/features/exercises/useExercises'
 import { useBookmarkIds, useToggleBookmark } from '@/features/exercises/useBookmarks'
 import { useCoachContext } from '@/features/auth/useCoach'
 import { CATEGORIES } from '@/lib/exercise-taxonomy'
-import { cn } from '@/lib/cn'
 import { useDebounced } from '@/lib/useDebounced'
 import { useT } from '@/lib/i18n'
 
@@ -22,30 +23,6 @@ const EQUIPMENT = [
   'band',
   'smith machine',
 ] as const
-
-function FilterChip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={cn(
-        'rounded-pill px-3.5 py-1.5 text-caption font-medium capitalize transition-colors',
-        active ? 'bg-accent text-plum' : 'bg-white/8 text-on-dark/75 hover:text-on-dark',
-      )}
-    >
-      {children}
-    </button>
-  )
-}
 
 export function Exercises() {
   const t = useT()
@@ -68,50 +45,67 @@ export function Exercises() {
 
   return (
     <CoachLayout>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <Display size="md" as="h1" className="text-accent">
-          {t('nav.exercises')}
-        </Display>
-        <Link to="/coach/exercises/new">
-          <Button>{t('exercises.custom.new')}</Button>
-        </Link>
-      </div>
+      <PageHeader
+        icon={Dumbbell}
+        eyebrow={t('nav.dashboard')}
+        title={t('nav.exercises')}
+        actions={
+          <Link to="/coach/exercises/new">
+            <Button>
+              <Plus aria-hidden />
+              {t('exercises.custom.new')}
+            </Button>
+          </Link>
+        }
+      />
 
-      <div className="mt-8 flex flex-col gap-5">
-        <Input
-          type="search"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={t('exercises.searchPlaceholder')}
-          className="max-w-md"
-        />
-
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((category) => (
-            <FilterChip
-              key={category}
-              active={categories.includes(category)}
-              onClick={() => toggle(categories, setCategories, category)}
-            >
-              {category}
-            </FilterChip>
-          ))}
+      <div className="mt-8 flex flex-col gap-4 rounded-card border border-line/70 bg-surface-card p-4 shadow-card sm:p-5">
+        <div className="relative max-w-md">
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute start-3.5 top-1/2 size-[18px] -translate-y-1/2 text-fg-subtle"
+          />
+          <Input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t('exercises.searchPlaceholder')}
+            className="ps-10"
+          />
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {EQUIPMENT.map((equipment) => (
-            <FilterChip
-              key={equipment}
-              active={equipments.includes(equipment)}
-              onClick={() => toggle(equipments, setEquipments, equipment)}
-            >
-              {equipment}
-            </FilterChip>
-          ))}
+        <div className="flex items-start gap-3">
+          <Shapes aria-hidden className="mt-2 size-4 shrink-0 text-copper" />
+          <div className="flex flex-wrap gap-2">
+            {CATEGORIES.map((category) => (
+              <Chip
+                key={category}
+                active={categories.includes(category)}
+                onClick={() => toggle(categories, setCategories, category)}
+              >
+                {category}
+              </Chip>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-start gap-3">
+          <Wrench aria-hidden className="mt-2 size-4 shrink-0 text-copper" />
+          <div className="flex flex-wrap gap-2">
+            {EQUIPMENT.map((equipment) => (
+              <Chip
+                key={equipment}
+                active={equipments.includes(equipment)}
+                onClick={() => toggle(equipments, setEquipments, equipment)}
+              >
+                {equipment}
+              </Chip>
+            ))}
+          </div>
         </div>
 
         {hasFilters && (
-          <div>
+          <div className="border-t border-line/70 pt-3">
             <Button
               variant="ghost"
               size="sm"
@@ -121,13 +115,14 @@ export function Exercises() {
                 setEquipments([])
               }}
             >
+              <FilterX aria-hidden />
               {t('exercises.clearFilters')}
             </Button>
           </div>
         )}
       </div>
 
-      {query.isPending && <p className="mt-10 text-body-sm text-muted-dark">{t('state.loading')}</p>}
+      {query.isPending && <InlineSpinner className="mt-10" />}
 
       {query.isError && (
         <p role="alert" className="mt-10 text-body-sm text-danger">
@@ -136,10 +131,10 @@ export function Exercises() {
       )}
 
       {query.isSuccess && exercises.length === 0 && (
-        <p className="mt-10 text-body-sm text-muted-dark">{t('exercises.noResults')}</p>
+        <EmptyState icon={SearchX} title={t('exercises.noResults')} className="mt-8" />
       )}
 
-      <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
         {exercises.map((exercise) => (
           <ExerciseCard
             key={exercise.id}
@@ -154,7 +149,11 @@ export function Exercises() {
 
       {query.hasNextPage && (
         <div className="mt-10 flex justify-center">
-          <Button onClick={() => void query.fetchNextPage()} disabled={query.isFetchingNextPage}>
+          <Button
+            variant="secondary"
+            onClick={() => void query.fetchNextPage()}
+            disabled={query.isFetchingNextPage}
+          >
             {query.isFetchingNextPage ? t('state.loading') : t('exercises.loadMore')}
           </Button>
         </div>

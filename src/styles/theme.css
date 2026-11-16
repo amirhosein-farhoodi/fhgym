@@ -1,14 +1,20 @@
 /*
  * FH Gym Assistant — design tokens
- * Base: the Champions4good style reference, adapted from a marketing poster to an app.
  *
- * Three deliberate departures from the reference, all documented in PLAN.md §9:
- *   1. Druk Condensed and Neue Montreal are commercial -> Bebas Neue and Inter.
- *   2. Every display size is a clamp(). A fixed 317px headline is a desktop poster,
- *      not a phone screen. The poster energy survives; the layout stops breaking at 390px.
- *   3. Lavender is the primary action on DARK surfaces only. On light surfaces the primary
- *      button is a plum fill. The reference contradicts itself here; this resolution
- *      satisfies both readings and is the only one that passes contrast.
+ * Palette: "patinaed metal against warm plaster and shadowy steel".
+ *   pine    #3F7F74  grounded green — brand, primary actions
+ *   sage    #A9C4B7  soft green — "done" states, quiet fills
+ *   cream   #F1E8D7  warm plaster — the largest surface, always
+ *   copper  #C28B5A  copper-brown — accents, "due" states, highlights
+ *   steel   #2B2F33  dark charcoal — text, small sharp accents, the hero band
+ *
+ * Rules that keep it calm rather than washed out:
+ *   - Cream is the page. Cards are a lighter plaster on top of it, separated by a hairline
+ *     and a very soft shadow — depth like light on a wall, not floating material.
+ *   - Steel is repeated in small accents (active nav, icons, borders on focus) to sharpen edges.
+ *   - Copper is punctuation. It is never a page background and never a large button.
+ *   - The brand hexes fail AA as small text on cream, so text and button fills use the
+ *     "-deep" shades below. The pure hexes stay for large type, icons and fills.
  */
 
 @import 'tailwindcss';
@@ -20,93 +26,103 @@
 @theme {
   /* ---------------------------------------------------------------- colors */
 
-  /* Brand palette — straight from the reference. */
-  --color-plum: #23002b;
-  --color-lavender: #e894ff;
-  --color-espresso: #291900;
-  --color-ink: #002629;
-  --color-slate: #333333;
-  --color-charcoal: #121212;
+  /* Brand palette. */
+  --color-pine: #3f7f74;
+  --color-sage: #a9c4b7;
+  --color-cream: #f1e8d7;
+  --color-copper: #c28b5a;
+  --color-steel: #2b2f33;
+
+  /* Derived shades. */
+  --color-pine-deep: #2f655c; /* 5.6:1 on cream — buttons, small green text */
+  --color-pine-soft: #dde7df; /* pine tint for selected rows */
+  --color-sage-soft: #e3ece6;
+  --color-copper-deep: #8a5a30; /* 4.9:1 on cream — copper as text */
+  --color-copper-soft: #f2e2d0;
+  --color-steel-soft: #43484d;
+  --color-plaster: #faf6ee; /* card surface, one step lighter than cream */
+  --color-sand: #e7dcc6; /* sunken fills inside cards */
   --color-paper: #ffffff;
-  --color-mint: #93ffe4;
-  --color-amber: #ffac47;
+  --color-danger: #a8443a; /* brick — revoke, delete */
+  --color-danger-soft: #f3dcd6;
 
-  /* Extensions the reference does not cover but an app needs. */
-  --color-danger: #ff4d5e; /* revoke access, delete program — distinct from lavender */
-  --color-plum-raised: #2e0438; /* hover/selected state on plum, one step lighter */
+  /* Semantic aliases. Prefer these in components. */
+  --color-surface: var(--color-cream);
+  --color-surface-card: var(--color-plaster);
+  --color-surface-raised: #fffcf6;
+  --color-surface-sunken: var(--color-sand);
+  --color-surface-inverse: var(--color-steel);
 
-  /* Semantic aliases. Prefer these in components; the brand names above are the source. */
-  --color-surface: var(--color-plum);
-  --color-surface-raised: var(--color-plum-raised);
-  --color-surface-card: var(--color-espresso);
-  --color-surface-card-deep: var(--color-ink);
-  --color-surface-light: var(--color-paper);
+  --color-accent: var(--color-pine-deep);
+  --color-on-accent: var(--color-cream);
+  --color-status-done: var(--color-sage);
+  --color-status-due: var(--color-copper);
 
-  --color-accent: var(--color-lavender);
-  --color-status-done: var(--color-mint);
-  --color-status-due: var(--color-amber);
+  --color-fg: var(--color-steel);
+  --color-fg-muted: #676b6e; /* 4.8:1 on cream */
+  --color-fg-subtle: #8d8f8f;
+  --color-on-inverse: var(--color-cream);
+  --color-on-inverse-muted: rgb(241 232 215 / 0.66);
 
-  /* Named so the generated utilities read well: text-on-dark, border-line-light, … */
-  --color-on-dark: var(--color-paper);
-  --color-on-light: var(--color-slate);
-  --color-heading-light: var(--color-charcoal);
-  --color-muted-dark: rgb(255 255 255 / 0.62);
-  --color-muted-light: #6b6b6b;
-
-  --color-line-dark: rgb(255 255 255 / 0.14);
-  --color-line-light: #e5e5e5;
+  --color-line: #ddd0b8;
+  --color-line-strong: #c9b99c;
+  --color-line-inverse: rgb(241 232 215 / 0.14);
 
   /* ------------------------------------------------------------- typography */
 
   /*
    * Indirection is intentional. --app-font-* is reassigned per language in global.css,
-   * so `font-display` renders Bebas Neue under lang=en and Morabba under lang=fa
+   * so `font-display` renders Barlow Condensed under lang=en and Morabba under lang=fa
    * without any component knowing which language is active.
    */
   --font-display: var(--app-font-display);
   --font-ui: var(--app-font-ui);
 
-  /* Fluid scale. Min values are the phone reading; max values are the reference's. */
-  --text-display-xl: clamp(4.5rem, 20vw, 19.8125rem); /* 72 -> 317 */
-  --text-display-xl--line-height: 0.78;
-  --text-display-xl--letter-spacing: 0.005em;
+  /* Fluid scale — refined, not poster-loud. */
+  --text-display-xl: clamp(3.25rem, 10vw, 7.5rem);
+  --text-display-xl--line-height: 0.9;
+  --text-display-xl--letter-spacing: -0.005em;
 
-  --text-display: clamp(3.5rem, 13vw, 11.6875rem); /* 56 -> 187 */
-  --text-display--line-height: 0.85;
-  --text-display--letter-spacing: 0.005em;
+  --text-display: clamp(2.75rem, 7vw, 5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.005em;
 
-  --text-heading: clamp(2rem, 6vw, 3.625rem); /* 32 -> 58 */
-  --text-heading--line-height: 1.1;
-  --text-heading--letter-spacing: -0.022em;
+  --text-heading: clamp(2rem, 4.5vw, 3rem);
+  --text-heading--line-height: 1;
+  --text-heading--letter-spacing: 0;
 
-  --text-heading-sm: clamp(1.5rem, 4vw, 2rem); /* 24 -> 32 */
-  --text-heading-sm--line-height: 0.85;
+  --text-heading-sm: clamp(1.5rem, 3vw, 1.875rem);
+  --text-heading-sm--line-height: 1.05;
   --text-heading-sm--letter-spacing: 0.005em;
 
-  --text-subheading: 1.5rem; /* 24 */
-  --text-subheading--line-height: 1;
-  --text-subheading--letter-spacing: 0.005em;
+  --text-subheading: 1.25rem;
+  --text-subheading--line-height: 1.2;
+  --text-subheading--letter-spacing: 0;
 
-  --text-body: 1rem; /* 16 */
+  --text-body: 1rem;
   --text-body--line-height: var(--app-leading-body);
   --text-body--letter-spacing: var(--app-tracking-ui);
 
-  --text-body-sm: 0.875rem; /* 14 */
+  --text-body-sm: 0.875rem;
   --text-body-sm--line-height: var(--app-leading-body);
   --text-body-sm--letter-spacing: var(--app-tracking-ui);
 
-  --text-caption: 0.75rem; /* 12 */
+  --text-caption: 0.75rem;
   --text-caption--line-height: var(--app-leading-body);
   --text-caption--letter-spacing: var(--app-tracking-ui);
 
   /* ---------------------------------------------------------------- shape */
   --radius-tag: 6px;
-  --radius-card: 14px;
-  --radius-special: 24px;
+  --radius-card: 16px;
+  --radius-special: 22px;
   --radius-pill: 9999px;
+
+  /* Soft, warm, low — light on plaster, never a floating material card. */
+  --shadow-card: 0 1px 0 rgb(43 47 51 / 0.04), 0 8px 24px -14px rgb(43 47 51 / 0.18);
+  --shadow-raised: 0 1px 0 rgb(43 47 51 / 0.05), 0 18px 40px -18px rgb(43 47 51 / 0.32);
 
   /* --------------------------------------------------------------- layout */
   --spacing-page: 1200px;
-  --spacing-section: 64px;
+  --spacing-section: 72px;
   --spacing-card: 20px;
 }

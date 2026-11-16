@@ -44,5 +44,5 @@ export function Claim() {
     )
   }
 
-  return <FullScreenSpinner />
+  return <FullScreenSpinner branded={false} />
 }

@@ -30,6 +30,8 @@ export interface Profile {
   gym_id: string | null
   display_name: string | null
   avatar_url: string | null
+  /** Shown under the coach's name on the trainee app, e.g. "Head coach". Migration 0007. */
+  title?: string | null
   role: CoachRole
   created_at: string
   updated_at: string
@@ -168,4 +170,14 @@ export interface Exercise {
   is_unilateral: boolean
   created_at: string
   updated_at: string
+}
+
+/** What the trainee app shows instead of our branding. From trainee_brand() (migration 0007). */
+export interface GymBrand {
+  gym_id: string | null
+  gym_name: string
+  logo_path: string | null
+  coach_name: string | null
+  coach_title: string | null
+  coach_avatar_url: string | null
 }

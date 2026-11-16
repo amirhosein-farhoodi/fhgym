@@ -21,10 +21,13 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@hookform/resolvers": "^5.9.1",
     "@supabase/supabase-js": "^2.116.0",
-    "@tanstack/react-query": "^5.103.1",
+    "@tanstack/query-sync-storage-persister": "^5.107.1",
+    "@tanstack/react-query": "^5.107.1",
+    "@tanstack/react-query-persist-client": "^5.107.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.23",
     "jalaliday": "^3.1.1",
+    "lucide-react": "^1.73.0",
     "motion": "^13.4.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.3.0",
@@ -56,6 +59,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.0",
     "vite": "^8.3.0",
+    "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.1"
   },
   "pnpm": {

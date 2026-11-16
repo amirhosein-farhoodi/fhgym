@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ArrowRight, Building2 } from 'lucide-react'
 import { Button, Display, Field, Input } from '@/components/ui'
+import { LocaleSwitch } from '@/components/LocaleSwitch'
+import { Wordmark } from '@/components/Wordmark'
 import { useCreateGym } from '@/features/auth/useCoach'
 import { useI18n } from '@/lib/i18n'
 
@@ -43,14 +46,21 @@ export function Onboarding() {
   }
 
   return (
-    <main className="min-h-dvh bg-surface px-6 py-16">
-      <div className="mx-auto w-full max-w-xl">
-        <Display size="md" as="h1" className="text-accent">
+    <main className="min-h-dvh bg-surface px-4 py-6 sm:px-6">
+      <div className="mx-auto flex max-w-xl items-center justify-between">
+        <Wordmark />
+        <LocaleSwitch />
+      </div>
+      <div className="mx-auto mt-12 w-full max-w-xl rounded-special border border-line/70 bg-surface-card p-6 shadow-raised sm:p-10">
+        <span className="flex size-14 items-center justify-center rounded-[16px] bg-steel text-sage">
+          <Building2 aria-hidden className="size-7" strokeWidth={1.5} />
+        </span>
+        <Display size="md" as="h1" className="mt-6 text-fg">
           {t('onboarding.title')}
         </Display>
-        <p className="mt-4 text-body text-muted-dark">{t('onboarding.subtitle')}</p>
+        <p className="mt-3 text-body text-fg-muted">{t('onboarding.subtitle')}</p>
 
-        <form className="mt-10 flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
+        <form className="mt-8 flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
           <Field label={t('onboarding.gymName.label')} error={nameError}>
             {({ id, describedBy, invalid }) => (
               <Input
@@ -86,8 +96,9 @@ export function Onboarding() {
           )}
 
           <div>
-            <Button type="submit" disabled={!canSubmit}>
+            <Button type="submit" size="lg" disabled={!canSubmit}>
               {t('onboarding.submit')}
+              <ArrowRight aria-hidden className="icon-directional" />
             </Button>
           </div>
         </form>

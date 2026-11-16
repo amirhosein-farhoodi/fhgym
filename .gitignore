@@ -28,3 +28,11 @@ supabase/.branches/
 
 # Seed artefacts — the GIF mirror is large and rebuildable from scripts/seed-exercises.ts
 scripts/.cache/
+
+# pnpm is the package manager (see package.json); an npm lockfile next to pnpm-lock.yaml
+# makes Netlify guess wrong.
+package-lock.json
+
+# vite-plugin-pwa dev output and the Netlify CLI's local state
+dev-dist/
+.netlify/

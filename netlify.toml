@@ -6,6 +6,8 @@
   # Netlify's current default. Note this is ahead of the local Node 20 — fine for a Vite
   # build (no jsdom involved), and it is the version that lets jsdom unpin later.
   NODE_VERSION = "22"
+  # Match package.json's packageManager so Netlify builds with the same pnpm as local.
+  PNPM_VERSION = "10.26.2"
 
 # ---------------------------------------------------------------- SPA fallback
 # Without this, every deep link returns Netlify's 404 page — including /auth/callback,
@@ -40,3 +42,19 @@
 
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# --------------------------------------------------------------- PWA
+# The service worker and manifest must never be cached by the browser or CDN, otherwise
+# installed phones keep running last month's app. Workbox handles versioning inside them.
+[[headers]]
+  for = "/sw.js"
+
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+
+  [headers.values]
+    Cache-Control = "no-cache"
+    Content-Type = "application/manifest+json"

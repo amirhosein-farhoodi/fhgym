@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import { Bookmark, Dumbbell } from 'lucide-react'
 import { Badge, Card } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { useI18n, useT } from '@/lib/i18n'
 import type { Exercise } from '@/lib/db.types'
-import { exerciseImageUrl } from './useExercises'
+import { exerciseImageUrl, mediaCrossOrigin } from './useExercises'
 import { exerciseName } from './name'
 
 /*
@@ -44,20 +45,19 @@ export function ExerciseCard({
     <>
       <div
         className={cn(
-          'relative mb-3 aspect-square overflow-hidden rounded-[10px]',
-          showPlaceholder ? 'bg-white/6' : 'bg-white',
+          'relative mb-3 aspect-square overflow-hidden rounded-[12px] ring-1 ring-line/60',
+          showPlaceholder ? 'bg-surface-sunken' : 'bg-paper',
         )}
       >
-        {!loaded && !showPlaceholder && <div className="absolute inset-0 animate-pulse bg-white/10" />}
+        {!loaded && !showPlaceholder && <div className="absolute inset-0 animate-pulse bg-surface-sunken" />}
 
         {showPlaceholder ?
-          <div className="flex h-full w-full items-center justify-center">
-            <span aria-hidden className="font-display text-heading-sm text-white/25">
-              {label.charAt(0)}
-            </span>
+          <div className="flex h-full w-full items-center justify-center text-line-strong">
+            <Dumbbell aria-hidden className="size-10" strokeWidth={1.25} />
           </div>
         : <img
             src={src}
+            crossOrigin={mediaCrossOrigin(src)}
             alt=""
             loading="lazy"
             decoding="async"
@@ -72,7 +72,7 @@ export function ExerciseCard({
       </div>
 
       <div className="flex items-start justify-between gap-2">
-        <p className="min-w-0 flex-1 text-body-sm font-medium text-on-dark">{label}</p>
+        <p className="min-w-0 flex-1 text-body-sm font-semibold text-fg">{label}</p>
         {onToggleBookmark && (
           <button
             type="button"
@@ -84,11 +84,11 @@ export function ExerciseCard({
               onToggleBookmark(exercise, !bookmarked)
             }}
             className={cn(
-              'shrink-0 rounded-pill px-2 py-0.5 text-caption transition-colors',
-              bookmarked ? 'text-status-due' : 'text-on-dark/35 hover:text-on-dark/70',
+              '-m-1.5 shrink-0 rounded-full p-1.5 transition-colors',
+              bookmarked ? 'text-copper' : 'text-fg-subtle hover:bg-surface-sunken hover:text-fg',
             )}
           >
-            {bookmarked ? '★' : '☆'}
+            <Bookmark aria-hidden className="size-[18px]" fill={bookmarked ? 'currentColor' : 'none'} />
           </button>
         )}
       </div>
@@ -109,14 +109,14 @@ export function ExerciseCard({
   )
 
   if (!interactive) {
-    return <Card className="flex flex-col">{content}</Card>
+    return <Card className="flex flex-col p-3 sm:p-4">{content}</Card>
   }
 
   return (
     <Card
       className={cn(
-        'flex cursor-pointer flex-col text-start transition-colors',
-        selected ? 'bg-accent/20 ring-2 ring-accent' : 'hover:bg-surface-raised',
+        'flex cursor-pointer flex-col p-3 text-start transition-[box-shadow,border-color] sm:p-4',
+        selected ? 'border-pine bg-pine-soft ring-2 ring-pine' : 'hover:border-line-strong hover:shadow-raised',
       )}
       role="button"
       tabIndex={0}

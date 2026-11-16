@@ -1,5 +1,6 @@
-import { Badge, Button } from '@/components/ui'
-import { exerciseImageUrl } from '@/features/exercises/useExercises'
+import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
+import { Badge } from '@/components/ui'
+import { exerciseImageUrl, mediaCrossOrigin } from '@/features/exercises/useExercises'
 import { exerciseName } from '@/features/exercises/name'
 import { cn } from '@/lib/cn'
 import { useI18n, useT } from '@/lib/i18n'
@@ -23,7 +24,7 @@ function NumberCell({
 }) {
   return (
     <label className="flex flex-col gap-1">
-      <span className="text-caption text-muted-dark">{label}</span>
+      <span className="text-caption font-medium text-fg-muted">{label}</span>
       <input
         type="number"
         inputMode="numeric"
@@ -37,8 +38,8 @@ function NumberCell({
         }}
         className={cn(
           width,
-          'rounded-tag border border-line-dark bg-white/6 px-2 py-1.5 text-body-sm text-on-dark',
-          'text-center focus:border-accent focus:outline-none',
+          'h-9 rounded-[10px] border border-line-strong bg-surface-raised px-2 text-body-sm font-semibold text-fg tabular-nums',
+          'text-center focus:border-accent focus:ring-4 focus:ring-pine/15 focus:outline-none',
         )}
       />
     </label>
@@ -60,14 +61,20 @@ export function ExerciseRow({ item, index, count, onPatch, onRemove, onMove }: E
   const src = exerciseImageUrl(item.exercise)
 
   return (
-    <li className="rounded-card bg-white/5 p-3">
+    <li className="rounded-card border border-line/70 bg-surface-raised p-3 sm:p-4">
       <div className="flex items-start gap-3">
-        <span className="size-14 shrink-0 overflow-hidden rounded-[8px] bg-white">
-          {src && <img src={src} alt="" loading="lazy" className="h-full w-full object-contain" />}
+        <span className="relative size-14 shrink-0 overflow-hidden rounded-[10px] bg-paper ring-1 ring-line/60">
+          <span
+            className="absolute start-0 top-0 z-10 flex size-5 items-center justify-center rounded-ee-[8px] bg-steel text-[0.65rem] font-bold text-cream"
+            dir="ltr"
+          >
+            {index + 1}
+          </span>
+          {src && <img src={src} crossOrigin={mediaCrossOrigin(src)} alt="" loading="lazy" className="h-full w-full object-contain" />}
         </span>
 
         <div className="min-w-0 flex-1">
-          <p className="truncate text-body-sm font-medium">{exerciseName(item.exercise, locale)}</p>
+          <p className="truncate text-body-sm font-semibold">{exerciseName(item.exercise, locale)}</p>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
             {item.exercise.equipments.slice(0, 1).map((equipment) => (
               <Badge key={equipment} tone="neutral" className="capitalize">
@@ -93,18 +100,18 @@ export function ExerciseRow({ item, index, count, onPatch, onRemove, onMove }: E
             aria-label={t('builder.moveUp')}
             disabled={index === 0}
             onClick={() => onMove(-1)}
-            className="rounded-tag bg-white/8 px-2 py-0.5 text-caption disabled:opacity-30"
+            className="flex size-8 items-center justify-center rounded-[8px] border border-line text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg disabled:opacity-30"
           >
-            ↑
+            <ArrowUp aria-hidden className="size-4" />
           </button>
           <button
             type="button"
             aria-label={t('builder.moveDown')}
             disabled={index === count - 1}
             onClick={() => onMove(1)}
-            className="rounded-tag bg-white/8 px-2 py-0.5 text-caption disabled:opacity-30"
+            className="flex size-8 items-center justify-center rounded-[8px] border border-line text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg disabled:opacity-30"
           >
-            ↓
+            <ArrowDown aria-hidden className="size-4" />
           </button>
         </div>
       </div>
@@ -146,17 +153,23 @@ export function ExerciseRow({ item, index, count, onPatch, onRemove, onMove }: E
         />
 
         <label className="flex min-w-40 flex-1 flex-col gap-1">
-          <span className="text-caption text-muted-dark">{t('builder.note')}</span>
+          <span className="text-caption font-medium text-fg-muted">{t('builder.note')}</span>
           <input
             value={item.notes ?? ''}
             onChange={(event) => onPatch({ notes: event.target.value || null })}
-            className="rounded-tag border border-line-dark bg-white/6 px-2 py-1.5 text-body-sm text-on-dark focus:border-accent focus:outline-none"
+            className="h-9 rounded-[10px] border border-line-strong bg-surface-raised px-3 text-body-sm text-fg focus:border-accent focus:ring-4 focus:ring-pine/15 focus:outline-none"
           />
         </label>
 
-        <Button variant="ghost" size="sm" onClick={onRemove}>
-          {t('action.delete')}
-        </Button>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={t('action.delete')}
+          title={t('action.delete')}
+          className="flex size-9 items-center justify-center rounded-[10px] text-fg-muted transition-colors hover:bg-danger-soft hover:text-danger"
+        >
+          <Trash2 aria-hidden className="size-[18px]" />
+        </button>
       </div>
     </li>
   )

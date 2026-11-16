@@ -20,6 +20,18 @@ Applied to project `pfbhkscauoxesvkcpzzw` via the Management API and verified:
 2. **Rotate the exposed credentials** — the two `sbp_` tokens and the Google client
    secret were pasted into a chat transcript.
 
+### Deploy checklist — redesign, PWA and gym branding (2026-11)
+
+1. **Supabase → SQL Editor:** run `supabase/migrations/0007_gym_branding.sql` (adds the
+   coach title and the `trainee_brand()` / `gym_brand()` functions). Until it runs, saving
+   the Gym profile page fails and trainees see no gym logo or coach.
+2. **Netlify → Environment variables:** the two variables below. The per-gym manifest
+   edge function (`netlify/edge-functions/gym-manifest.ts`) reads the same two at runtime,
+   so set their scope to include **Functions** as well as Builds.
+3. **Domain:** wherever this document says `fhgym.netlify.app`, use the real site name —
+   in Supabase's Site URL / Redirect URLs and in Google's Authorised JavaScript origins.
+   PWA install only works over https, so test installs on the deployed site, not on a LAN IP.
+
 The rest of this document is the reference for redoing any of it by hand.
 
 ---
