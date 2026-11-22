@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ArrowRight, ClipboardList, Dumbbell, LoaderCircle, QrCode, ScanLine, Whistle } from 'lucide-react'
 import { Badge, Button } from '@/components/ui'
+import { Donate } from '@/components/Donate'
 import { LocaleSwitch } from '@/components/LocaleSwitch'
 import { Wordmark } from '@/components/Wordmark'
 import { signInWithGoogle } from '@/features/auth/api'
@@ -187,6 +188,9 @@ export function Landing() {
           </div>
         </div>
       </section>
+
+      {/* --------------------------------------------------------------- tip */}
+      <Donate />
 
       <footer className="mx-auto flex max-w-page items-center justify-between px-4 py-8 text-caption text-fg-muted sm:px-6">
         <span>{t('app.name')}</span>

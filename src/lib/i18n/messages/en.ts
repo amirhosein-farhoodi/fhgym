@@ -248,4 +248,23 @@ export const en = {
   'exercises.custom.mediaHint': 'Paste a link to an animation or photo.',
   'exercises.custom.instructions': 'Instructions (optional)',
   'exercises.custom.instructionsHint': 'One step per line.',
+
+  // --- donate
+  'donate.title': 'Like the app?',
+  'donate.body': 'It is free, with no ads. If it helps you or your crew, a small tip keeps it going. Entirely optional — nothing is locked behind it.',
+  'donate.amount': 'Amount',
+  'donate.network': 'Network (USDT)',
+  'donate.copy': 'Copy',
+  'donate.copied': 'Copied',
+  'donate.send': 'Send ${amount} with {wallet}',
+  'donate.waiting': 'Waiting for wallet…',
+  'donate.step.connect': 'Waiting for your wallet…',
+  'donate.step.switch': 'Switching MetaMask to Ethereum mainnet…',
+  'donate.step.confirm': 'Confirm the amount in your wallet…',
+  'donate.note.eth': 'Opens MetaMask on Ethereum. You confirm the amount and pay the network fee.',
+  'donate.note.tron': 'TRON needs TronLink or any TRC-20 wallet — copying the address works everywhere.',
+  'donate.noMetamask': 'MetaMask was not found in this browser. Copy the address instead.',
+  'donate.noTronlink': 'TronLink was not found. Copy the address and pay from any TRC-20 wallet.',
+  'donate.thanks': 'Thank you! Your transaction was sent.',
+  'donate.viewTx': 'View it on the explorer',
 } as const

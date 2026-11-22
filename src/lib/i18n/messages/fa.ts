@@ -247,4 +247,23 @@ export const fa: Messages = {
   'exercises.custom.mediaHint': 'لینک یک تصویر متحرک یا عکس را بگذار.',
   'exercises.custom.instructions': 'توضیح اجرا (اختیاری)',
   'exercises.custom.instructionsHint': 'هر مرحله در یک خط.',
+
+  // --- donate
+  'donate.title': 'از برنامه خوشت آمده؟',
+  'donate.body': 'رایگان است و تبلیغ ندارد. اگر به تو یا شاگردانت کمک کرده، یک حمایت کوچک باعث ادامه‌اش می‌شود. کاملاً اختیاری است — هیچ چیزی پشت آن قفل نیست.',
+  'donate.amount': 'مبلغ',
+  'donate.network': 'شبکه (USDT)',
+  'donate.copy': 'کپی',
+  'donate.copied': 'کپی شد',
+  'donate.send': 'ارسال ${amount} با {wallet}',
+  'donate.waiting': 'در انتظار کیف پول…',
+  'donate.step.connect': 'در انتظار کیف پولت…',
+  'donate.step.switch': 'تغییر شبکه MetaMask به اتریوم…',
+  'donate.step.confirm': 'مبلغ را در کیف پولت تأیید کن…',
+  'donate.note.eth': 'MetaMask روی شبکه اتریوم باز می‌شود. مبلغ را خودت تأیید می‌کنی و کارمزد شبکه را می‌پردازی.',
+  'donate.note.tron': 'برای ترون به TronLink یا هر کیف پول TRC-20 نیاز داری — کپی کردن آدرس همه‌جا کار می‌کند.',
+  'donate.noMetamask': 'MetaMask در این مرورگر پیدا نشد. به‌جای آن آدرس را کپی کن.',
+  'donate.noTronlink': 'TronLink پیدا نشد. آدرس را کپی کن و از هر کیف پول TRC-20 پرداخت کن.',
+  'donate.thanks': 'ممنونم! تراکنشت ارسال شد.',
+  'donate.viewTx': 'مشاهده در اکسپلورر',
 }
